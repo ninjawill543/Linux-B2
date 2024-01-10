@@ -127,4 +127,13 @@ Bon j'arrête de blabla, voilà le soleil.
 - bah juste voilà ça doit fonctionner : je git clone ton truc, je `docker compose up` et ça doit fonctionne :)
 - ce serait cool que l'app affiche un truc genre `App is ready on http://localhost:80` truc du genre dans les logs !
 
-[Dossier PHP](php/)
+➜ **Un environnement de dév local propre avec Docker**
+
+- 3 conteneurs, donc environnement éphémère/destructible
+- juste un **`docker-compose.yml`** donc facilement transportable
+- TRES facile de mettre à jour chacun des composants si besoin
+  - oh tiens il faut ajouter une lib !
+  - oh tiens il faut une autre version de PHP !
+  - tout ça c'est np
+
+![save urself](img/save_urself.png)
