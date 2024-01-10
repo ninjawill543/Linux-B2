@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  php_apache:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    volumes:
+      - ./src:/var/www/html/
+    ports:
+      - 80:80
+  mysql:
+    image: mysql
+    volumes:
+      - ./sql:/docker-entrypoint/
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: docker_database
+    ports:
+      - 3306:3306
+    command: --init-file /docker-entrypoint/seed.sql
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+volumes:
+  docker-entrypoint:
