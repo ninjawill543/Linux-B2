@@ -32,10 +32,14 @@ CIS est une boîte qui notamment édite des guides de configuration
 
 - téléchargez le guide CIS de Rocky 9 [ici](https://downloads.cisecurity.org/#/)
 ## 2.1
+
+### 2.1.1
 ```
 # rpm -q chrony
 chrony-4.2-1.el8.rocky.1.0.x86_64
-
+```
+### 2.1.2
+```
 # grep -E "^(server|pool)" /etc/chrony.conf
 pool 2.rocky.pool.ntp.org iburst
 
@@ -43,22 +47,25 @@ pool 2.rocky.pool.ntp.org iburst
 OPTIONS="-u chrony"
 ```
 ## 3.1 
+### 3.1.1
 ```
 # grep -Pqs '^\h*0\b' /sys/module/ipv6/parameters/disable && echo -e "\n -
 > IPv6 is enabled\n" || echo -e "\n - IPv6 is not enabled\n"
 
  -
 IPv6 is enabled
-
-
+```
+### 3.1.2
+```
 # bash wire.sh 
 
 - Audit Result:
  ** PASS **
 
  - System has no wireless NICs installed
-
-
+```
+### 3.1.3
+```
  # bash tipc.sh 
 - Audit Result:
  ** PASS **
@@ -67,6 +74,7 @@ IPv6 is enabled
 system
 ```
 ## 3.2
+### 3.2.1
 ```
 # bash ipforward.sh 
 - Audit Result:
@@ -90,29 +98,33 @@ a kernel parameter configuration file
  - "net.ipv6.conf.all.forwarding" is not set incorectly in
 a kernel parameter configuration file
 
-$printf "
+# printf "
 net.ipv4.ip_forward = 0
 " >> /etc/sysctl.d/60-netipv4_sysctl.conf
 
 
 # {
-> sysctl -w net.ipv4.ip_forward=0
-> sysctl -w net.ipv4.route.flush=1
-> }
+sysctl -w net.ipv4.ip_forward=0
+sysctl -w net.ipv4.route.flush=1
+}
+
 net.ipv4.ip_forward = 0
 net.ipv4.route.flush = 1
 
-printf "
+# printf "
 net.ipv6.conf.all.forwarding = 0
 " >> /etc/sysctl.d/60-netipv6_sysctl.conf
 
-{
-> sysctl -w net.ipv6.conf.all.forwarding=0
-> sysctl -w net.ipv6.route.flush=1
-> }
+# {
+ sysctl -w net.ipv6.conf.all.forwarding=0
+ sysctl -w net.ipv6.route.flush=1
+ }
+ 
 net.ipv6.conf.all.forwarding = 0
 net.ipv6.route.flush = 1
-
+```
+### 3.2.2
+```
 # bash ipforward.sh 
 - Audit Result:
  ** PASS **
@@ -130,18 +142,17 @@ in "/etc/sysctl.d/60-netipv6_sysctl.conf"
  - "net.ipv6.conf.all.forwarding" is not set incorectly in
 a kernel parameter configuration file
 
-# cat /etc/sysctl.conf 
-
 # printf "
-> net.ipv4.conf.all.send_redirects = 0
-> net.ipv4.conf.default.send_redirects = 0
-> " >> /etc/sysctl.d/60-netipv4_sysctl.conf
+ net.ipv4.conf.all.send_redirects = 0
+ net.ipv4.conf.default.send_redirects = 0
+ " >> /etc/sysctl.d/60-netipv4_sysctl.conf
 
 # {
-> sysctl -w net.ipv4.conf.all.send_redirects=0
-> sysctl -w net.ipv4.conf.default.send_redirects=0
-> sysctl -w net.ipv4.route.flush=1
-> }
+ sysctl -w net.ipv4.conf.all.send_redirects=0
+ sysctl -w net.ipv4.conf.default.send_redirects=0
+ sysctl -w net.ipv4.route.flush=1
+ }
+
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.route.flush = 1
