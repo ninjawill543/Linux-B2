@@ -690,7 +690,6 @@ PASS_MAX_DAYS	365
 
 ```
 
-
 ## 2. Conf SSH
 
 ![SSH](./img/ssh.jpg)
