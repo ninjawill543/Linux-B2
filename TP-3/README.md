@@ -732,17 +732,38 @@ Le Dot est une techno qui va dans ce sens : DoT pour DNS over TLS. On fait nos r
 
 🌞 **Configurer la machine pour qu'elle fasse du DoT**
 
-- installez `systemd-networkd` sur la machine pour ça
-- activez aussi DNSSEC tant qu'on y est
-- référez-vous à cette doc qui est cool par exemple
-- utilisez le serveur public de CloudFlare : 1.1.1.1 (il supporte le DoT)
+```
+$ dnf install epel release -y
+$ dnf update -y
+$ dnf install systemd-resolved -y
+$ systemctl enable systemd-resolved
+$ systemctl start systemd-resolved
+
+$ cat /etc/systemd/resolved.conf 
+...
+[Resolve]
+DNS=1.1.1.1
+Domains=~
+DNSSEC=yes
+DNSOverTLS=yes
+...
+
+
+$ systemctl restart systemd-resolved
+
+$ ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+```
 
 🌞 **Prouvez que les requêtes DNS effectuées par la machine...**
 
-- ont une réponse qui provient du serveur que vous avez conf (normalement c'est `127.0.0.1` avec `systemd-networkd` qui tourne)
-  - quand on fait un `dig ynov.com` on voit en bas quel serveur a répondu
-- mais qu'en réalité, la requête a été forward vers 1.1.1.1 avec du TLS
-  - je veux une capture Wireshark à l'appui !
+[Pcap dns over tls](DNS_Over_TLS.pcap)
+
+```
+[user@tp3 ~]$ sudo tcpdump -v -i enp0s8 port 853
+dropped privs to tcpdump
+tcpdump: listening on enp0s8, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+11:16:41.405498 IP (tos 0x0, ttl 64, id 51393, offset 0, flags [DF], proto TCP (6), length 64)tp3.44446 > one.one.one.one.domain-s: Flags [S], cksum 0x0f43 (incorrect -> 0x15a9), seq 2249304843, win 64240, options [mss 1460,sackOK,TS val 1357496916 ecr 0,nop,wscale 7,tfo  cookiereq,nop,nop], length 0
+```
 
 ## 5. AIDE
 
@@ -754,16 +775,62 @@ Dans notre cas, AIDE, il surveille que certains fichiers du disque n'ont pas ét
 
 🌞 **Installer et configurer AIDE**
 
-- et bah incroyable mais [une très bonne ressource ici](https://www.it-connect.fr/aide-utilisation-et-configuration-dune-solution-de-controle-dintegrite-sous-linux/)
+```
+[user@tp3-secu ~]$ sudo dnf install aide
+```
 - configurez AIDE pour qu'il surveille (fichier de conf en compte-rendu)
   - le fichier de conf du serveur SSH
+```
+[user@tp3-secu ~]$ sudo cat /etc/aide.conf | grep ssh
+# ssh
+/etc/ssh/sshd_config$ CONTENT_EX
+/etc/ssh/ssh_config$ CONTENT_EX
+```
   - le fichier de conf du client chrony (le service qui gère le temps)
+```
+[user@tp3-secu ~]$ sudo cat /etc/aide.conf | grep chrony
+/etc/chrony.conf$ CONTENT_EX
+/etc/chrony.keys$ CONTENT_EX
+```
   - le fichier de conf de `systemd-networkd`
+```
+
+```
 
 🌞 **Scénario de modification**
 
 - introduisez une modification dans le fichier de conf du serveur SSH
+```
+$ echo "#miao" >> /etc/ssh/sshd_config 
+```
 - montrez que AIDE peut la détecter
+
+```
+[user@tp3-secu ~]$ sudo aide --check
+Start timestamp: 2024-01-18 04:47:53 -0500 (AIDE 0.16)
+AIDE found differences between database and filesystem!!
+
+Summary:
+  Total number of entries:	46980
+  Added entries:		0
+  Removed entries:		0
+  Changed entries:		1
+
+---------------------------------------------------
+Changed entries:
+---------------------------------------------------
+
+f   ...    .C... : /etc/ssh/sshd_config
+
+---------------------------------------------------
+Detailed information about changes:
+---------------------------------------------------
+
+File: /etc/ssh/sshd_config
+  SHA512   : M5jreLePw8iPODBcNfhuoCo91SMaeRPT | rfitfAzqxORWzo2Dnw+GG5uFUhW6HT4N
+             wFHXfC741C/xnyJNCcrv74cBxrUoWqHc | aRiWqU9NJvC5Rr6/dGolGd++QayFlhiI
+             avC+uIBMDWjuiIcMNb5V3Q==         | mqQ5FmUX69Cxopl+FeRxYg==
+```
 
 🌞 **Timer et service systemd**
 
