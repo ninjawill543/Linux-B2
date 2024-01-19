@@ -793,7 +793,9 @@ Dans notre cas, AIDE, il surveille que certains fichiers du disque n'ont pas ét
 ```
   - le fichier de conf de `systemd-networkd`
 ```
-
+[user@tp3-secu ~]$ sudo cat /etc/aide.conf | grep systemd-networkd
+/etc/systemd/resolved.conf$ CONTENT_EX
+/etc/resolv.conf$ CONTENT_EX
 ```
 
 🌞 **Scénario de modification**
