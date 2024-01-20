@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  php_apache:
+    build:
+      context: ../php/src
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+      - nginx
+    volumes:
+      - ../php/src:/var/www/html/
+  mysql:
+    image: mysql
+    volumes:
+      - ../php/sql:/docker-entrypoint/
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: docker_database
+    command: --init-file /docker-entrypoint/seed.sql
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    depends_on:
+      - nginx
+    environment:
+      - PMA_ARBITRARY=1
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 443:443
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./server.crt:/root/ssl/server.crt
+      - ./server.key:/root/ssl/server.key
+volumes:
+  docker-entrypoint:
