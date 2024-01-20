@@ -733,7 +733,7 @@ Le Dot est une techno qui va dans ce sens : DoT pour DNS over TLS. On fait nos r
 🌞 **Configurer la machine pour qu'elle fasse du DoT**
 
 ```
-$ dnf install epel release -y
+$ dnf install epel-release -y
 $ dnf update -y
 $ dnf install systemd-resolved -y
 $ systemctl enable systemd-resolved
@@ -758,7 +758,7 @@ $ ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 [Pcap dns over tls](DNS_Over_TLS.pcap)
 
 ```
-[user@tp3 ~]$ sudo tcpdump -v -i enp0s8 port 853
+$ tcpdump -v -i enp0s8 port 853
 dropped privs to tcpdump
 tcpdump: listening on enp0s8, link-type EN10MB (Ethernet), snapshot length 262144 bytes
 11:16:41.405498 IP (tos 0x0, ttl 64, id 51393, offset 0, flags [DF], proto TCP (6), length 64)tp3.44446 > one.one.one.one.domain-s: Flags [S], cksum 0x0f43 (incorrect -> 0x15a9), seq 2249304843, win 64240, options [mss 1460,sackOK,TS val 1357496916 ecr 0,nop,wscale 7,tfo  cookiereq,nop,nop], length 0
@@ -775,25 +775,25 @@ Dans notre cas, AIDE, il surveille que certains fichiers du disque n'ont pas ét
 🌞 **Installer et configurer AIDE**
 
 ```
-[user@tp3-secu ~]$ sudo dnf install aide
+$ dnf install aide
 ```
 - configurez AIDE pour qu'il surveille (fichier de conf en compte-rendu)
   - le fichier de conf du serveur SSH
 ```
-[user@tp3-secu ~]$ sudo cat /etc/aide.conf | grep ssh
+$  cat /etc/aide.conf | grep ssh
 # ssh
 /etc/ssh/sshd_config$ CONTENT_EX
 /etc/ssh/ssh_config$ CONTENT_EX
 ```
   - le fichier de conf du client chrony (le service qui gère le temps)
 ```
-[user@tp3-secu ~]$ sudo cat /etc/aide.conf | grep chrony
+$ cat /etc/aide.conf | grep chrony
 /etc/chrony.conf$ CONTENT_EX
 /etc/chrony.keys$ CONTENT_EX
 ```
   - le fichier de conf de `systemd-networkd`
 ```
-[user@tp3-secu ~]$ sudo cat /etc/aide.conf | grep systemd-networkd
+$ cat /etc/aide.conf | grep systemd-networkd
 /etc/systemd/resolved.conf$ CONTENT_EX
 /etc/resolv.conf$ CONTENT_EX
 ```
@@ -807,7 +807,7 @@ $ echo "#miao" >> /etc/ssh/sshd_config
 - montrez que AIDE peut la détecter
 
 ```
-[user@tp3-secu ~]$ sudo aide --check
+$ aide --check
 Start timestamp: 2024-01-18 04:47:53 -0500 (AIDE 0.16)
 AIDE found differences between database and filesystem!!
 
