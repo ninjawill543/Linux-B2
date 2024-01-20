@@ -1,30 +1,5 @@
 # TP2 admins : PHP stack
 
-Une fois que tu sais manipuler Docker en tant qu'admin :
-
-➜ **tu peux facilement tester des services/apps**
-
-- en les lançant dans des conteneurs
-- sans te taper une install
-- azi je veux juste regarder la webui, nik la doc de 3 pieds de long
-- tester des stacks complètes qui nécessitent 3, 4, 5 services, en une commande
-
-➜ **tu peux conteneuriser des apps en prod**
-
-- pour une meilleure sécu éventuellement, si tu respectes les bonnes pratiques
-- pour une gestion un peu unifiée de tes services
-- si tout est conteneur, c'est unifié !
-
-➜ **tu peux proposer/gérer des services qui utilisent les conteneurs sous le capot**
-
-- je pense à tout ce qui est CI/CD, pipelines, etc
-- aussi à copain Kubernetes
-
-➜ **te préparer à use Kubernetes qui est dans ton futur d'admin si tu te tournes vers le système**
-
-- Kube il lance juste des conteneurs pour toi
-- donc bien maîtriser la notion de conteneur, ça aide pas mal à capter le délire
-
 ## Sommaire
 
 - [TP2 admins : PHP stack](#tp2-admins--php-stack)
@@ -43,18 +18,51 @@ Donc "just for good measures" comme on dit...
 
 🌞 **Limiter l'accès aux ressources**
 
-- limiter la RAM que peut utiliser chaque conteneur à 1G
-- limiter à 1CPU chaque conteneur
+```
+$ docker run --memory 1g --cpus 1.0 alpine echo "ha"
+ha
 
-> Ca se fait avec une option sur `docker run` ou son équivalent en syntaxe `docker-compose.yml`.
+
+$ cat docker-compose.yml 
+version: '3'
+
+services:
+  limitedbruh:
+    image: alpine 
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+    entrypoint: echo haha
+
+$ docker compose up -d && docker compose logs
+[+] Running 2/2
+ ✔ Network m4ul_default          Created                                                        0.1s 
+ ✔ Container m4ul-limitedbruh-1  Started                                                        0.0s 
+m4ul-limitedbruh-1  | haha
+```
 
 🌞 **No `root`**
 
-- s'assurer que chaque conteneur n'utilise pas l'utilisateur `root`
-- mais bien un utilisateur dédié
-- on peut préciser avec une option du `run` sous quelle identité le processus sera lancé
+```
+$ docker run --user 420 -it alpine whoami
+whoami: unknown uid 420
 
-> Je rappelle qu'un conteneur met en place **un peu** d'isolation, **mais le processus tourne concrètement sur la machine hôte**. Donc il faut bien que, sur la machine hôte, il s'exécute sous l'identité d'un utilisateur, comme n'importe quel autre processus.
+$ cat docker-compose.yml 
+version: '3'
+
+services:
+  ratio:
+    image: alpine
+    user: "420"
+    entrypoint: whoami
+
+$ docker compose up -d && docker compose logs
+[+] Running 1/1
+ ✔ Container m4ul-ratio-1  Started                                                              0.0s 
+m4ul-ratio-1  | whoami: unknown uid 420
+```
 
 # II. Reverse proxy buddy
 
@@ -66,39 +74,7 @@ On va ajouter un reverse proxy dans le mix !
 
 🌞 **Adaptez le `docker-compose.yml`** de [la partie précédente](./php.md)
 
-- il doit inclure un quatrième conteneur : un reverse proxy NGINX
-  - image officielle !
-  - un volume pour ajouter un fichier de conf
-- je vous file une conf minimale juste en dessous
-- c'est le seul conteneur exposé (partage de ports)
-  - il permet d'accéder soit à PHPMyAdmin
-  - soit à votre site
-- vous ajouterez au fichier `hosts` de **votre PC** (le client)
-  - `www.supersite.com` qui pointe vers l'IP de la machine qui héberge les conteneurs
-  - `pma.supersite.com` qui pointe vers la même IP (`pma` pour PHPMyAdmin)
-  - en effet, c'est grâce au nom que vous saisissez que NGINX saura vers quel conteneur vous renvoyer !
-
-> *Tu peux choisir un nom de domaine qui te plaît + on s'en fout, mais pense à bien adapter tous mes exemples par la suite si tu en choisis un autre.*
-
-```nginx
-server {
-    listen       80;
-    server_name  www.supersite.com;
-
-    location / {
-        proxy_pass   http://nom_du_conteneur_PHP;
-    }
-}
-
-server {
-    listen       80;
-    server_name  pma.supersite.com;
-
-    location / {
-        proxy_pass   http://nom_du_conteneur_PMA;
-    }
-}
-```
+[Dossier reverse proxy](reverse_proxy/)
 
 ## B. HTTPS auto-signé
 

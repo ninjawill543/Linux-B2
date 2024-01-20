@@ -14,14 +14,8 @@
 
 [Dossier php](php/)
 
-# II Dév. Python
-
-[Document dédié au lancement d'un environnement de dév Python avec Docker.](./php.md)
-
 # II Admin. Maîtrise de la stack PHP
 
 [Document dédié à la maîtrise de la stack PHP](./admin.md)
 
-# II Secu. Big brain
 
-Pour les sécus, vous faites tout : la partie "II Dév" et la partie et "II Admin".
