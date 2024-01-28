@@ -708,21 +708,23 @@ PASS_MAX_DAYS	365
 
 🌞 **Chiffrement fort côté serveur**
 
-- trouver une ressource de confiance (je veux le lien en compte-rendu)
-- configurer le serveur SSH pour qu'il utilise des paramètres forts en terme de chiffrement (je veux le fichier de conf dans le compte-rendu)
-  - conf dans le fichier de conf
-  - regénérer des clés pour le serveur ?
-  - regénérer les paramètres Diffie-Hellman ? (se renseigner sur Diffie-Hellman ?)
+```
+$ sudo rm /etc/ssh/ssh_host_*
+$ sudo rm ~/.ssh/id_*
+$ echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx3fqeQSeFfcJFsQx1E8BC8aCi/fWoK6M+fuKB/lOZ0 m4ul@thinkpad" | sudo tee /home/$USER/.ssh/authorized_keys
+$ sudo systemctl sshd restart
+```
+[Conf ssh](sshd_config)
 
 🌞 **Clés de chiffrement fortes pour le client**
 
-- trouver une ressource de confiance (je veux le lien en compte-rendu)
-- générez-vous une paire de clés qui utilise un chiffrement fort et une passphrase
-- ne soyez pas non plus absurdes dans le choix du chiffrement quand je dis "fort" (genre pas de RSA avec une clé de taile 98789080932083209 bytes)
+```
+m4ul@thinkpad:~$ ssh-keygen -o -a 256 -t ed25519
+```
 
 🌞 **Connectez-vous en SSH à votre VM avec cette paire de clés**
 
-- prouvez en ajoutant `-vvvv` sur la commande `ssh` de connexion que vous utilisez bien cette clé là
+[Preuve connexion ssh](connexion_ssh)
 
 ## 4. DoT
 

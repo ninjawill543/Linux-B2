@@ -1,0 +1,201 @@
+m4ul@thinkpad:~$ sudo ssh user@10.1.0.2 -i ~/.ssh/id_ed25519 -vvvv
+OpenSSH_8.9p1 Ubuntu-3ubuntu0.6, OpenSSL 3.0.2 15 Mar 2022
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: include /etc/ssh/ssh_config.d/*.conf matched no files
+debug1: /etc/ssh/ssh_config line 21: Applying options for *
+debug2: resolve_canonicalize: hostname 10.1.0.2 is address
+debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts' -> '/root/.ssh/known_hosts'
+debug3: expanded UserKnownHostsFile '~/.ssh/known_hosts2' -> '/root/.ssh/known_hosts2'
+debug3: ssh_connect_direct: entering
+debug1: Connecting to 10.1.0.2 [10.1.0.2] port 22.
+debug3: set_sock_tos: set socket 3 IP_TOS 0x10
+debug1: Connection established.
+debug1: identity file /home/m4ul/.ssh/id_ed25519 type 3
+debug1: identity file /home/m4ul/.ssh/id_ed25519-cert type -1
+debug1: Local version string SSH-2.0-OpenSSH_8.9p1 Ubuntu-3ubuntu0.6
+debug1: Remote protocol version 2.0, remote software version OpenSSH_8.7
+debug1: compat_banner: match: OpenSSH_8.7 pat OpenSSH* compat 0x04000000
+debug2: fd 3 setting O_NONBLOCK
+debug1: Authenticating to 10.1.0.2:22 as 'user'
+debug3: record_hostkey: found key type ED25519 in file /root/.ssh/known_hosts:19
+debug3: load_hostkeys_file: loaded 1 keys from 10.1.0.2
+debug1: load_hostkeys: fopen /root/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug3: order_hostkeyalgs: have matching best-preference key type ssh-ed25519-cert-v01@openssh.com, using HostkeyAlgorithms verbatim
+debug3: send packet: type 20
+debug1: SSH2_MSG_KEXINIT sent
+debug3: receive packet: type 20
+debug1: SSH2_MSG_KEXINIT received
+debug2: local client KEXINIT proposal
+debug2: KEX algorithms: curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,sntrup761x25519-sha512@openssh.com,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256,ext-info-c,kex-strict-c-v00@openssh.com
+debug2: host key algorithms: ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+debug2: ciphers ctos: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+debug2: ciphers stoc: chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com
+debug2: MACs ctos: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+debug2: MACs stoc: umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1
+debug2: compression ctos: none,zlib@openssh.com,zlib
+debug2: compression stoc: none,zlib@openssh.com,zlib
+debug2: languages ctos: 
+debug2: languages stoc: 
+debug2: first_kex_follows 0 
+debug2: reserved 0 
+debug2: peer server KEXINIT proposal
+debug2: KEX algorithms: curve25519-sha256
+debug2: host key algorithms: ssh-ed25519
+debug2: ciphers ctos: chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+debug2: ciphers stoc: chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+debug2: MACs ctos: hmac-sha2-512-etm@openssh.com
+debug2: MACs stoc: hmac-sha2-512-etm@openssh.com
+debug2: compression ctos: none,zlib@openssh.com
+debug2: compression stoc: none,zlib@openssh.com
+debug2: languages ctos: 
+debug2: languages stoc: 
+debug2: first_kex_follows 0 
+debug2: reserved 0 
+debug1: kex: algorithm: curve25519-sha256
+debug1: kex: host key algorithm: ssh-ed25519
+debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
+debug3: send packet: type 30
+debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
+debug3: receive packet: type 31
+debug1: SSH2_MSG_KEX_ECDH_REPLY received
+debug1: Server host key: ssh-ed25519 SHA256:y2LjtNrJXBUV95bG8KtTwECYQGzhgTnvR9TTdlX0zK0
+debug3: record_hostkey: found key type ED25519 in file /root/.ssh/known_hosts:19
+debug3: load_hostkeys_file: loaded 1 keys from 10.1.0.2
+debug1: load_hostkeys: fopen /root/.ssh/known_hosts2: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts: No such file or directory
+debug1: load_hostkeys: fopen /etc/ssh/ssh_known_hosts2: No such file or directory
+debug1: Host '10.1.0.2' is known and matches the ED25519 host key.
+debug1: Found key in /root/.ssh/known_hosts:19
+debug3: send packet: type 21
+debug2: ssh_set_newkeys: mode 1
+debug1: rekey out after 134217728 blocks
+debug1: SSH2_MSG_NEWKEYS sent
+debug1: expecting SSH2_MSG_NEWKEYS
+debug3: receive packet: type 21
+debug1: SSH2_MSG_NEWKEYS received
+debug2: ssh_set_newkeys: mode 0
+debug1: rekey in after 134217728 blocks
+debug1: Will attempt key: /home/m4ul/.ssh/id_ed25519 ED25519 SHA256:kCrBOeByEPI844EvpJNbCzSVe0mrlA/VwDfVrxH0s+E explicit
+debug2: pubkey_prepare: done
+debug3: send packet: type 5
+debug3: receive packet: type 7
+debug1: SSH2_MSG_EXT_INFO received
+debug1: kex_input_ext_info: server-sig-algs=<ssh-ed25519,sk-ssh-ed25519@openssh.com,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ssh-dss,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ecdsa-sha2-nistp256@openssh.com,webauthn-sk-ecdsa-sha2-nistp256@openssh.com>
+debug3: receive packet: type 6
+debug2: service_accept: ssh-userauth
+debug1: SSH2_MSG_SERVICE_ACCEPT received
+debug3: send packet: type 50
+debug3: receive packet: type 53
+debug3: input_userauth_banner: entering
+\S
+Kernel \r on an \m
+debug3: receive packet: type 51
+debug1: Authentications that can continue: publickey
+debug3: start over, passed a different list publickey
+debug3: preferred gssapi-with-mic,publickey,keyboard-interactive,password
+debug3: authmethod_lookup publickey
+debug3: remaining preferred: keyboard-interactive,password
+debug3: authmethod_is_enabled publickey
+debug1: Next authentication method: publickey
+debug1: Offering public key: /home/m4ul/.ssh/id_ed25519 ED25519 SHA256:kCrBOeByEPI844EvpJNbCzSVe0mrlA/VwDfVrxH0s+E explicit
+debug3: send packet: type 50
+debug2: we sent a publickey packet, wait for reply
+debug3: receive packet: type 60
+debug1: Server accepts key: /home/m4ul/.ssh/id_ed25519 ED25519 SHA256:kCrBOeByEPI844EvpJNbCzSVe0mrlA/VwDfVrxH0s+E explicit
+debug3: sign_and_send_pubkey: using publickey with ED25519 SHA256:kCrBOeByEPI844EvpJNbCzSVe0mrlA/VwDfVrxH0s+E
+debug3: sign_and_send_pubkey: signing using ssh-ed25519 SHA256:kCrBOeByEPI844EvpJNbCzSVe0mrlA/VwDfVrxH0s+E
+Enter passphrase for key '/home/m4ul/.ssh/id_ed25519': 
+debug3: send packet: type 50
+debug3: receive packet: type 52
+Authenticated to 10.1.0.2 ([10.1.0.2]:22) using "publickey".
+debug1: channel 0: new [client-session]
+debug3: ssh_session2_open: channel_new: 0
+debug2: channel 0: send open
+debug3: send packet: type 90
+debug1: Requesting no-more-sessions@openssh.com
+debug3: send packet: type 80
+debug1: Entering interactive session.
+debug1: pledge: filesystem
+debug3: receive packet: type 80
+debug1: client_input_global_request: rtype hostkeys-00@openssh.com want_reply 0
+debug3: client_input_hostkeys: received ED25519 key SHA256:y2LjtNrJXBUV95bG8KtTwECYQGzhgTnvR9TTdlX0zK0
+debug1: client_input_hostkeys: searching /root/.ssh/known_hosts for 10.1.0.2 / (none)
+debug3: hostkeys_foreach: reading file "/root/.ssh/known_hosts"
+debug3: hostkeys_find: found ssh-ed25519 key at /root/.ssh/known_hosts:19
+debug1: client_input_hostkeys: searching /root/.ssh/known_hosts2 for 10.1.0.2 / (none)
+debug1: client_input_hostkeys: hostkeys file /root/.ssh/known_hosts2 does not exist
+debug3: client_input_hostkeys: 1 server keys: 0 new, 1 retained, 0 incomplete match. 0 to remove
+debug1: client_input_hostkeys: no new or deprecated keys from server
+debug3: receive packet: type 4
+debug1: Remote: /home/user/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug3: receive packet: type 4
+debug1: Remote: /home/user/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding
+debug3: receive packet: type 91
+debug2: channel_input_open_confirmation: channel 0: callback start
+debug2: fd 3 setting TCP_NODELAY
+debug3: set_sock_tos: set socket 3 IP_TOS 0x10
+debug2: client_session2_setup: id 0
+debug2: channel 0: request pty-req confirm 1
+debug3: send packet: type 98
+debug1: Sending environment.
+debug3: Ignored env COLORTERM
+debug1: channel 0: setting env LC_ADDRESS = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug1: channel 0: setting env LC_NAME = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug1: channel 0: setting env LC_MONETARY = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug3: Ignored env XAUTHORITY
+debug1: channel 0: setting env LC_PAPER = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug1: channel 0: setting env LANG = "en_US.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug3: Ignored env LS_COLORS
+debug3: Ignored env XDG_CURRENT_DESKTOP
+debug3: Ignored env TERM
+debug1: channel 0: setting env LC_IDENTIFICATION = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug3: Ignored env DISPLAY
+debug1: channel 0: setting env LC_TELEPHONE = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug1: channel 0: setting env LC_MEASUREMENT = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug1: channel 0: setting env LC_TIME = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug3: Ignored env PATH
+debug1: channel 0: setting env LC_NUMERIC = "fr_FR.UTF-8"
+debug2: channel 0: request env confirm 0
+debug3: send packet: type 98
+debug3: Ignored env MAIL
+debug3: Ignored env LOGNAME
+debug3: Ignored env USER
+debug3: Ignored env HOME
+debug3: Ignored env SHELL
+debug3: Ignored env SUDO_COMMAND
+debug3: Ignored env SUDO_USER
+debug3: Ignored env SUDO_UID
+debug3: Ignored env SUDO_GID
+debug2: channel 0: request shell confirm 1
+debug3: send packet: type 98
+debug2: channel_input_open_confirmation: channel 0: callback done
+debug2: channel 0: open confirm rwindow 0 rmax 32768
+debug3: receive packet: type 99
+debug2: channel_input_status_confirm: type 99 id 0
+debug2: PTY allocation request accepted on channel 0
+debug2: channel 0: rcvd adjust 2097152
+debug3: receive packet: type 99
+debug2: channel_input_status_confirm: type 99 id 0
+debug2: shell request accepted on channel 0
+Last login: Sun Jan 28 18:14:52 2024 from 10.1.0.1
