@@ -1,13 +1,8 @@
 #!/bin/bash
 
-#take input for client public key
-
-#rpm -q chrony | grep -q 'package chrony is not installed' && echo 'oh no'
-
 chrony () {
   rpm -q chrony | grep -q 'package chrony is not installed' && dnf install chrony
 }
-
 
 
 main () {
