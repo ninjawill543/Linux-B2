@@ -26,7 +26,6 @@ SyslogFacility AUTH
 UseDNS no
 PermitTunnel no
 AllowTcpForwarding no
-AllowUsers $ssh_name
 AllowStreamLocalForwarding no
 GatewayPorts no
 AllowAgentForwarding no
@@ -145,12 +144,67 @@ ssh () {
     rm ~/.ssh/id_*
     echo $pub | sudo tee /home/$USER/.ssh/authorized_keys
     ssh-keygen -o -a 256 -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
-    systemctl sshd restart
+    systemctl restart sshd
     stat -Lc "%n %a %u/%U %g/%G" /etc/ssh/sshd_config | grep -q '/etc/ssh/sshd_config 600 0/root 0/root' && chown root:root /etc/ssh/sshd_config ; chmod u-x,go-rwx /etc/ssh/sshd_config
     chmod 0600 /etc/ssh/ssh_host_ed25519_key
     echo "$ssh_config" | tee /etc/ssh/sshd_config
+    systemctl restart sshd
 }
 
+DOT () {
+    dnf install epel-release -y
+    dnf update -y
+    dnf install systemd-resolved -y
+    systemctl enable systemd-resolved
+    systemctl start systemd-resolved
+    echo "
+            [Resolve]
+            DNS=1.1.1.1
+            Domains=~
+            DNSSEC=yes
+            DNSOverTLS=yes" | tee /etc/systemd/resolved.conf 
+
+    systemctl restart systemd-resolved
+    ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+}
+
+firewall () {
+    systemctl enable firewalld
+    systemctl start firewalld
+    firewall-cmd --permanent --zone=public --add-port=7372/tcp
+    firewall-cmd --permanent --zone=public --add-port=22/tcp
+    firewall-cmd --reload
+}
+
+# AIDE () {
+
+# }
+
+Docker () {
+    dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    dnf install docker-ce docker-ce-cli containerd.io -y 
+    systemctl start docker
+    systemctl enable docker
+    usermod -aG docker $USER
+    echo "
+        services:
+            endlessh:
+                image: lscr.io/linuxserver/endlessh:latest
+                container_name: endlessh
+                environment:
+                    - PUID=1000
+                    - PGID=1000
+                    - TZ=Etc/UTC
+                ports:
+                    - 22:2222
+                restart: unless-stopped" | tee docker-compose.yml
+    docker compose up -d
+    
+}
+
+Client (){
+    echo "You can use this command to reconnect to the server once it has been restarted: sudo ssh $ssh_name@server_ip -i your_key -p 7372"
+}
 
 main () {
     dnf update -y
@@ -164,6 +218,10 @@ main () {
     icmp_broadcast
     rev_path_filter
     ssh
+    DOT
+    firewall
+    Docker
+    Client
 }
 
 
