@@ -712,6 +712,7 @@ PASS_MAX_DAYS	365
 $ sudo rm /etc/ssh/ssh_host_*
 $ sudo rm ~/.ssh/id_*
 $ echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx3fqeQSeFfcJFsQx1E8BC8aCi/fWoK6M+fuKB/lOZ0 m4ul@thinkpad" | sudo tee /home/$USER/.ssh/authorized_keys
+$ ssh-keygen -o -a 256 -t ed25519
 $ sudo systemctl sshd restart
 ```
 [Conf ssh](sshd_config)
