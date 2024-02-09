@@ -1,47 +1,5 @@
 #!/bin/bash
 
-ssh_config="
-Protocol 2
-StrictModes yes
-Port 7372
-AuthenticationMethods publickey
-PubkeyAuthentication yes
-HostKey /etc/ssh/ssh_host_ed25519_key
-HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519
-KexAlgorithms curve25519-sha256
-Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
-MACs hmac-sha2-512-etm@openssh.com
-HostbasedAcceptedKeyTypes ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519
-PermitRootLogin no
-MaxAuthTries 4
-MaxSessions 2
-PasswordAuthentication no
-PermitEmptyPasswords no
-IgnoreRhosts yes
-HostbasedAuthentication no
-ChallengeResponseAuthentication no
-X11Forwarding no
-LogLevel INFO
-SyslogFacility AUTH
-UseDNS no
-PermitTunnel no
-AllowTcpForwarding no
-AllowStreamLocalForwarding no
-GatewayPorts no
-AllowAgentForwarding no
-Banner /etc/issue.net
-PrintLastLog yes
-ClientAliveInterval 15
-ClientAliveCountMax 3
-LoginGraceTime 30
-MaxStartups 10:30:60
-UsePAM yes
-PermitUserEnvironment no
-TCPKeepAlive yes
-AcceptEnv LANG LC_*
-Subsystem sftp /usr/lib/ssh/sftp-server -f AUTHPRIV -l INFO"
-
-
 who () {
     if [ "$EUID" -ne 0 ]
         then echo "Please run as root"
@@ -53,6 +11,46 @@ chrony () {
   rpm -q chrony | grep -q 'package chrony is not installed' && echo 'Installing chrony' ; dnf install -y chrony
   systemctl start chronyd
   systemctl enable chronyd
+}
+
+permissions () {    
+    df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null | xargs -I '{}' chmod a+t '{}'
+    chmod 644 /etc/passwd
+	chmod 600 /etc/shadow
+	chmod 644 /etc/group
+	chmod 440 /etc/sudoers
+	chmod 600 /etc/ssh/sshd_config
+	chmod 644 /etc/sysctl.conf
+	chmod 644 /etc/fstab
+	chmod 644 /etc/hosts.allow
+	chmod 644 /etc/hosts.deny
+	chmod 644 /etc/login.defs
+	chmod 644 /etc/profile
+	chmod 644 /etc/motd
+	chmod 644 /etc/issue
+	chmod 600 /etc/securetty
+	chmod 644 /etc/shells
+	chmod 644 /etc/aliases
+	chmod 600 /etc/crontab
+	chmod 644 /etc/hosts
+    chown root:root /etc/passwd
+	chown root:shadow /etc/shadow
+	chown root:root /etc/group
+	chown root:root /etc/sudoers
+	chown root:root /etc/ssh/sshd_config
+	chown root:root /etc/sysctl.conf
+	chown root:root /etc/fstab
+	chown root:root /etc/hosts.allow
+	chown root:root /etc/hosts.deny
+	chown root:root /etc/login.defs
+	chown root:root /etc/profile
+	chown root:root /etc/motd
+	chown root:root /etc/issue
+	chown root:root /etc/securetty
+	chown root:root /etc/shells
+	chown root:root /etc/aliases
+	chown root:root /etc/crontab
+	chown root:root /etc/hosts
 }
 
 ip_forward () {
@@ -142,12 +140,14 @@ rev_path_filter () {
 ssh () {
     rm /etc/ssh/ssh_host_*
     rm ~/.ssh/id_*
-    echo $pub | sudo tee /home/$USER/.ssh/authorized_keys
+    mkdir /home/$ssh_name/.ssh/
+    touch /home/$ssh_name/.ssh/authorized_keys
+    echo $pub | sudo tee /home/$ssh_name/.ssh/authorized_keys
     ssh-keygen -o -a 256 -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
     systemctl restart sshd
     stat -Lc "%n %a %u/%U %g/%G" /etc/ssh/sshd_config | grep -q '/etc/ssh/sshd_config 600 0/root 0/root' && chown root:root /etc/ssh/sshd_config ; chmod u-x,go-rwx /etc/ssh/sshd_config
     chmod 0600 /etc/ssh/ssh_host_ed25519_key
-    echo "$ssh_config" | tee /etc/ssh/sshd_config
+    cp ssh.txt /etc/ssh/sshd_config
     systemctl restart sshd
 }
 
@@ -173,19 +173,48 @@ firewall () {
     systemctl start firewalld
     firewall-cmd --permanent --zone=public --add-port=7372/tcp
     firewall-cmd --permanent --zone=public --add-port=22/tcp
+    firewall-cmd --permanent --zone=public --add-port=80/tcp
+    firewall-cmd --permanent --zone=public --add-port=443/tcp
     firewall-cmd --reload
 }
 
-# AIDE () {
+AIDE () {
+    dnf install aide -y 
+    aide --init
+    cp -p /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+    aide --update
+}
+
+fail2ban () {
+    dnf install fail2ban -y
+    systemctl enable fail2ban
+    systemctl start fail2ban
+    cp fail2ban.txt /etc/fail2ban/jail.local
+    mv /etc/fail2ban/jail.d/00-firewalld.conf /etc/fail2ban/jail.d/00-firewalld.local
+    systemctl restart fail2ban
+    echo "
+        [sshd]
+        enabled = true
+
+        # Override the default global configuration
+        # for specific jail sshd
+        bantime = 1d
+        maxretry = 3" | tee /etc/fail2ban/jail.d/sshd.local
+    systemctl restart fail2ban
+}
+
+# nginx () {
 
 # }
+
+
 
 Docker () {
     dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     dnf install docker-ce docker-ce-cli containerd.io -y 
     systemctl start docker
     systemctl enable docker
-    usermod -aG docker $USER
+    usermod -aG docker $ssh_name
     echo "
         services:
             endlessh:
@@ -198,8 +227,33 @@ Docker () {
                 ports:
                     - 22:2222
                 restart: unless-stopped" | tee docker-compose.yml
+            # nginx:
+            #     image: nginx:1.15-alpine
+            #     ports:
+            #         - "80:80"
+            #         - "443:443"
+            #     volumes:
+            #         - ./Nginx:/etc/nginx/conf.d
+            #         - ./Nginx/certbot/conf:/etc/letsencrypt
+            #         - ./Nginx/certbot/www:/var/www/certbot
+            # certbot:
+            #     image: certbot/certbot
+            #     volumes:
+            #         - ./Nginx/certbot/conf:/etc/letsencrypt
+            #         - ./Nginx/certbot/www:/var/www/certbot
     docker compose up -d
     
+}
+
+usb (){
+    echo 'blacklist usb-storage' >> /etc/modprobe.d/blacklist.conf
+    modprobe usb-storage
+}
+
+selinux () {
+    dnf install selinux-policy-targeted selinux-policy-devel -y
+    sed -i 's/^SELINUX=.*/SELINUX=enforcing/g' /etc/selinux/config
+
 }
 
 Client (){
@@ -210,6 +264,7 @@ main () {
     dnf update -y
     dnf upgrade -y
     chrony
+    permissions
     ip_forward
     packet_redirect
     icmp_redirect
@@ -220,7 +275,12 @@ main () {
     ssh
     DOT
     firewall
+    AIDE
+    fail2ban
+    # nginx
     Docker
+    usb
+    selinux
     Client
 }
 
