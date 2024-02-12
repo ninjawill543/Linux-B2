@@ -12,7 +12,7 @@ services:
                     - 22:2222
                 restart: unless-stopped
         
-            nginx:
+            reverse_proxy:
                 image: nginx:alpine
                 container_name: reverse_proxy
                 ports:
