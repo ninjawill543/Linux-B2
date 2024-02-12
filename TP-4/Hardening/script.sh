@@ -207,7 +207,7 @@ fail2ban () {
 
 # }
 
-
+# " | tee docker-compose.yml
 
 Docker () {
     dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -226,7 +226,23 @@ Docker () {
                     - TZ=Etc/UTC
                 ports:
                     - 22:2222
-                restart: unless-stopped" | tee docker-compose.yml
+                restart: unless-stopped
+        
+            nginx:
+                image: nginx:alpine
+                container_name: reverse_proxy
+                ports:
+                    - 443:443
+                volumes:
+                    - ./nginx/reverse.conf:/etc/nginx/conf.d/default.conf:ro
+                    - ./nginx/server.crt:/root/ssl/server.crt
+                    - ./nginx/server.key:/root/ssl/server.key
+            nginx:
+                image: nginx:alpine
+                container_name: nginx
+                volumes:
+                    - ./nginx/index.html:/usr/share/nginx/html/index.html " | tee docker-compose.yml
+                
     docker compose up -d
     
 }
