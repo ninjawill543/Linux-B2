@@ -21,6 +21,8 @@ services:
                     - ./nginx/reverse.conf:/etc/nginx/conf.d/default.conf:ro
                     - ./nginx/server.crt:/root/ssl/server.crt
                     - ./nginx/server.key:/root/ssl/server.key
+                depends_on:
+                  - nginx
             nginx:
                 image: nginx:alpine
                 container_name: nginx
