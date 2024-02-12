@@ -243,11 +243,11 @@ main () {
     ssh
     DOT
     firewall
-    AIDE
     fail2ban
     Docker
     usb
     selinux
+    AIDE
     Client
 }
 
