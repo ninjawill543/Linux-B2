@@ -171,10 +171,10 @@ DOT () {
 firewall () {
     systemctl enable firewalld
     systemctl start firewalld
-    firewall-cmd --permanent --zone=public --add-port=7372/tcp
-    firewall-cmd --permanent --zone=public --add-port=22/tcp
-    firewall-cmd --permanent --zone=public --add-port=80/tcp
-    firewall-cmd --permanent --zone=public --add-port=443/tcp
+    firewall-cmd --permanent --add-port=7372/tcp
+    firewall-cmd --permanent --add-port=22/tcp
+    firewall-cmd --permanent --add-service=http
+    firewall-cmd --permanent --add-service=https
     firewall-cmd --reload
 }
 
@@ -227,20 +227,6 @@ Docker () {
                 ports:
                     - 22:2222
                 restart: unless-stopped" | tee docker-compose.yml
-            # nginx:
-            #     image: nginx:1.15-alpine
-            #     ports:
-            #         - "80:80"
-            #         - "443:443"
-            #     volumes:
-            #         - ./Nginx:/etc/nginx/conf.d
-            #         - ./Nginx/certbot/conf:/etc/letsencrypt
-            #         - ./Nginx/certbot/www:/var/www/certbot
-            # certbot:
-            #     image: certbot/certbot
-            #     volumes:
-            #         - ./Nginx/certbot/conf:/etc/letsencrypt
-            #         - ./Nginx/certbot/www:/var/www/certbot
     docker compose up -d
     
 }
