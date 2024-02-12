@@ -214,36 +214,8 @@ Docker () {
     dnf install docker-ce docker-ce-cli containerd.io -y 
     systemctl start docker
     systemctl enable docker
-    usermod -aG docker $ssh_name
-    echo "
-        services:
-            endlessh:
-                image: lscr.io/linuxserver/endlessh:latest
-                container_name: endlessh
-                environment:
-                    - PUID=1000
-                    - PGID=1000
-                    - TZ=Etc/UTC
-                ports:
-                    - 22:2222
-                restart: unless-stopped
-        
-            nginx:
-                image: nginx:alpine
-                container_name: reverse_proxy
-                ports:
-                    - 443:443
-                volumes:
-                    - ./nginx/reverse.conf:/etc/nginx/conf.d/default.conf:ro
-                    - ./nginx/server.crt:/root/ssl/server.crt
-                    - ./nginx/server.key:/root/ssl/server.key
-            nginx:
-                image: nginx:alpine
-                container_name: nginx
-                volumes:
-                    - ./nginx/index.html:/usr/share/nginx/html/index.html " | tee docker-compose.yml
-                
-    docker compose up -d
+    usermod -aG docker $ssh_name       
+    #docker compose up -d
     
 }
 
