@@ -256,7 +256,7 @@ while true; do
     who
     read -p "Is this machine the server? (y/n) " yn
     case $yn in
-        [Yy]* ) read -p "Please enter your clients public key, then press enter: " pub; read -p "Please enter the username of the account you would like to use to connect via ssh, then press enter: " ssh_name;  main; break;;
+        [Yy]* ) read -p "Please enter your clients public key, then press enter: " pub; read -p "\n.' \n.' Please enter the username of the account you would like to use to connect via ssh, then press enter: " ssh_name;  main; break;;
         [Nn]* ) echo "Sorry, this script only works if the machine is your server"; break;;
         * ) echo "Please answer yes or no.";;
     esac
